@@ -6,7 +6,6 @@ from pathlib import Path
 import yaml
 from crewai import Agent, Crew, Process, Task
 from crewai.llm import LLM
-from crewai_tools import SerperDevTool
 
 CONFIG_DIR = Path(__file__).parent / "config"
 
@@ -26,13 +25,19 @@ def build_crew() -> Crew:
         temperature=0.7,
     )
 
-    search_tool = SerperDevTool()
+    # Ferramenta de busca opcional — só ativa com SERPER_API_KEY valida
+    search_tools: list = []
+    serper_key = os.getenv("SERPER_API_KEY", "")
+    if serper_key and serper_key != "sua-chave-aqui":
+        from crewai_tools import SerperDevTool
+
+        search_tools = [SerperDevTool()]
 
     # --- Agentes ---
     researcher = Agent(
         **agents_cfg["destination_researcher"],
         llm=llm,
-        tools=[search_tool],
+        tools=search_tools,
     )
 
     curator = Agent(
