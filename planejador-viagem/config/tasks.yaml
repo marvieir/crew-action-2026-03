@@ -1,0 +1,87 @@
+research_task:
+  description: >
+    Pesquise informações completas sobre {destino} para uma viagem de {num_dias} dias
+    no período de {data_ida} a {data_volta}.
+
+    Você DEVE cobrir os seguintes tópicos:
+
+    1. **Clima e Temperatura**: condições climáticas esperadas no período da viagem
+    2. **Moeda e Câmbio**: moeda local, taxa de câmbio aproximada com o Real (BRL)
+    3. **Transporte**: como se locomover (metrô, ônibus, táxi, apps de transporte)
+    4. **Vistos e Documentação**: requisitos de entrada para brasileiros
+    5. **Segurança**: dicas gerais de segurança para turistas
+    6. **Bairros Recomendados**: os melhores bairros para se hospedar e visitar,
+       considerando o estilo de viagem "{estilo}"
+    7. **Eventos e Festivais**: eventos que acontecem no período da viagem
+    8. **Custo de Vida**: preços médios de refeições, transporte e atrações
+
+    Forneça informações práticas e atualizadas.
+  expected_output: >
+    Um relatório detalhado em português do Brasil cobrindo todos os 8 tópicos
+    listados acima, organizado com títulos e subtítulos claros.
+  agent: destination_researcher
+
+curation_task:
+  description: >
+    Com base na pesquisa sobre {destino}, selecione as melhores experiências para
+    {num_viajantes} viajante(s) com estilo "{estilo}" e orçamento total de
+    R$ {orcamento} (R$ {orcamento_por_pessoa} por pessoa) para {num_dias} dias.
+
+    Você DEVE incluir:
+
+    1. **Hospedagem**: 2 a 3 opções de hotéis/hostels com faixa de preço por noite
+    2. **Restaurantes**: pelo menos 1 por dia, variando entre locais autênticos
+       e opções práticas. Inclua faixa de preço por refeição
+    3. **Atrações Principais**: as imperdíveis do destino
+    4. **Experiências Alternativas**: atividades fora do circuito turístico tradicional
+    5. **Distribuição Geográfica**: agrupe atividades por proximidade para cada dia
+
+    IMPORTANTE:
+    - Respeite o orçamento total de R$ {orcamento}
+    - Considere {num_viajantes} pessoa(s) nos cálculos
+    - Priorize experiências alinhadas ao estilo "{estilo}"
+  expected_output: >
+    Uma lista organizada por categoria (hospedagem, restaurantes, atrações,
+    experiências alternativas) com nome, descrição breve, localização/bairro,
+    faixa de preço e por que foi selecionada. Em português do Brasil.
+  agent: experience_curator
+
+itinerary_task:
+  description: >
+    Escreva o roteiro final completo dia a dia para {num_dias} dias em {destino}.
+
+    O roteiro DEVE seguir este formato para CADA dia:
+
+    ## Dia X — [Título temático do dia]
+
+    **Manhã (horário ~ horário)**
+    - Atividade com descrição breve
+    - Dica prática relevante
+
+    **Tarde (horário ~ horário)**
+    - Atividade com descrição breve
+    - Dica prática relevante
+
+    **Noite (horário ~ horário)**
+    - Atividade com descrição breve
+    - Dica prática relevante
+
+    **Gastos estimados do dia**: R$ X,XX
+
+    ---
+
+    Ao final do roteiro, inclua:
+    - Resumo de gastos totais vs. orçamento de R$ {orcamento}
+    - Checklist de itens para levar na mala
+    - 5 frases úteis no idioma local (se aplicável)
+
+    IMPORTANTE:
+    - O roteiro é para {num_viajantes} pessoa(s)
+    - Estilo de viagem: {estilo}
+    - Inclua tempos de deslocamento entre atividades
+    - Escreva tudo em português do Brasil
+  expected_output: >
+    Roteiro completo formatado em Markdown, dia a dia, com horários, descrições,
+    dicas práticas, estimativa de gastos por dia e resumo final.
+    Tudo em português do Brasil.
+  agent: itinerary_writer

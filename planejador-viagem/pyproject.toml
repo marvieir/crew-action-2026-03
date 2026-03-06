@@ -1,0 +1,14 @@
+[project]
+name = "planejador-viagem"
+version = "0.1.0"
+description = "Planejador de Viagem Personalizado com CrewAI e Streamlit"
+requires-python = ">=3.11"
+dependencies = [
+    "crewai[tools]>=0.108.0",
+    "streamlit>=1.41.0",
+    "python-dotenv>=1.0.0",
+]
+
+[build-system]
+requires = ["setuptools>=75.0"]
+build-backend = "setuptools.backends._legacy:_Backend"
