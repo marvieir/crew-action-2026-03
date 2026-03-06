@@ -45,6 +45,7 @@ class ProgressState:
     is_complete: bool = False
     has_error: bool = False
     error_message: str = ""
+    final_result: str | None = None
     _lock: threading.Lock = field(default_factory=threading.Lock)
 
     def add_step(self, step: ProgressStep) -> None:
@@ -72,6 +73,7 @@ class ProgressState:
             self.is_complete = False
             self.has_error = False
             self.error_message = ""
+            self.final_result = None
 
 
 # Estado global de progresso — compartilhado entre listener e Streamlit

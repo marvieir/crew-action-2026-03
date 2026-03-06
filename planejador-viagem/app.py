@@ -206,17 +206,22 @@ with st.sidebar:
 
 
 def _run_crew(inputs: dict) -> None:
-    """Executa o crew em uma thread separada."""
+    """Executa o crew em uma thread separada.
+
+    NOTE: Nao podemos gravar em st.session_state aqui porque esta thread
+    nao possui ScriptRunContext do Streamlit.  Usamos progress_state
+    (thread-safe) como intermediario e a UI principal le de la.
+    """
     try:
         crew = build_crew()
         result = crew.kickoff(inputs=inputs)
-        st.session_state.result = result.raw
-        st.session_state.error = None
+        progress_state.final_result = result.raw
     except Exception as exc:
-        st.session_state.error = str(exc)
-        st.session_state.result = None
+        progress_state.has_error = True
+        progress_state.error_message = str(exc)
     finally:
-        st.session_state.running = False
+        progress_state.is_running = False
+        progress_state.is_complete = True
 
 
 if submitted:
@@ -295,6 +300,18 @@ if st.session_state.running:
 
         if steps_html:
             progress_placeholder.markdown(steps_html, unsafe_allow_html=True)
+
+        # Verificar se a thread terminou (via progress_state thread-safe)
+        if not progress_state.is_running and progress_state.is_complete:
+            # Transferir resultado do progress_state para session_state
+            if progress_state.final_result:
+                st.session_state.result = progress_state.final_result
+                st.session_state.error = None
+            elif progress_state.has_error:
+                st.session_state.error = progress_state.error_message
+                st.session_state.result = None
+            st.session_state.running = False
+            break
 
         time.sleep(1)
 
