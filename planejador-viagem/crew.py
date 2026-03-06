@@ -46,6 +46,10 @@ def build_crew() -> Crew:
     )
 
     # --- Tasks ---
+    # Remover campo 'agent' do YAML (e' apenas referencia, passamos o objeto)
+    for task_cfg in tasks_cfg.values():
+        task_cfg.pop("agent", None)
+
     research_task = Task(
         **tasks_cfg["research_task"],
         agent=researcher,

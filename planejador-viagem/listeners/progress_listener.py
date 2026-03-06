@@ -6,25 +6,19 @@ import threading
 from dataclasses import dataclass, field
 from enum import Enum
 
-from crewai.utilities.events.base_event_listener import BaseEventListener
-from crewai.utilities.events.agent_events import (
-    AgentExecutionStartedEvent,
+from crewai.events.base_event_listener import BaseEventListener
+from crewai.events.event_types import (
     AgentExecutionCompletedEvent,
     AgentExecutionErrorEvent,
-)
-from crewai.utilities.events.crew_events import (
-    CrewKickoffStartedEvent,
+    AgentExecutionStartedEvent,
     CrewKickoffCompletedEvent,
     CrewKickoffFailedEvent,
-)
-from crewai.utilities.events.task_events import (
-    TaskStartedEvent,
+    CrewKickoffStartedEvent,
     TaskCompletedEvent,
-)
-from crewai.utilities.events.tool_events import (
-    ToolUsageStartedEvent,
-    ToolUsageFinishedEvent,
+    TaskStartedEvent,
     ToolUsageErrorEvent,
+    ToolUsageFinishedEvent,
+    ToolUsageStartedEvent,
 )
 
 
@@ -87,9 +81,6 @@ progress_state = ProgressState()
 class ProgressListener(BaseEventListener):
     """Listener que captura eventos do CrewAI e atualiza o estado de progresso."""
 
-    def __init__(self) -> None:
-        super().__init__()
-
     def setup_listeners(self, crewai_event_bus) -> None:
         @crewai_event_bus.on(CrewKickoffStartedEvent)
         def on_crew_started(source, event: CrewKickoffStartedEvent):
@@ -129,7 +120,10 @@ class ProgressListener(BaseEventListener):
 
         @crewai_event_bus.on(TaskStartedEvent)
         def on_task_started(source, event: TaskStartedEvent):
-            desc = getattr(event, "description", "")
+            task = getattr(event, "task", None)
+            desc = ""
+            if task:
+                desc = getattr(task, "description", "") or ""
             label = desc[:80] + "..." if len(desc) > 80 else desc
             progress_state.add_step(
                 ProgressStep(StepType.TASK, f"Task iniciada: {label}" if label else "Task iniciada")
