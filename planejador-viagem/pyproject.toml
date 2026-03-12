@@ -2,7 +2,7 @@
 name = "planejador-viagem"
 version = "0.1.0"
 description = "Planejador de Viagem Personalizado com CrewAI e Streamlit"
-requires-python = ">=3.11"
+requires-python = ">=3.11,<3.14"
 dependencies = [
     "crewai[tools]>=0.108.0",
     "streamlit>=1.41.0",
